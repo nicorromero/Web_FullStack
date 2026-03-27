@@ -6,7 +6,7 @@ const { getCarts,
     createCart,
     updateCart,
     deleteCart
-} = require('../controllers/carts.controller');
+} = require('../controllers/carts.controllers');
 
 router.get('/', getCarts);
 router.get('/:id', getCartById);

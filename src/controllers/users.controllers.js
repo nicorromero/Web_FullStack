@@ -24,16 +24,10 @@ const getUserById = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-        return res.status(400).json({ error: 'Nombre y email son obligatorios' });
-    }
-
     try {
-        const nuevoUser = new User({ name, email, password });
+        const nuevoUser = new User(req.body);
         await nuevoUser.save();
-        res.status(201).json(nuevoUser);
+        res.json(nuevoUser);
     } catch (error) {
         res.status(500).json({ error: 'Error al crear el usuario' });
     }
@@ -42,29 +36,15 @@ const createUser = async (req, res) => {
 const deleteUser = async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
-        if (!user) {
-            return res.status(404).json({ error: 'User no encontrado' });
-        }
-        res.status(204).send();
+        res.json(user);
     } catch (error) {
         res.status(500).json({ error: 'Error al eliminar el usuario' });
     }
 };
 
 const updateUserById = async (req, res) => {
-    const { name, email } = req.body;
-
     try {
-        const user = await User.findByIdAndUpdate(
-            req.params.id,
-            { name, email },
-            { new: true, runValidators: true }
-        );
-
-        if (!user) {
-            return res.status(404).json({ error: 'User no encontrado' });
-        }
-
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         res.json(user);
     } catch (error) {
         res.status(500).json({ error: 'Error al actualizar el usuario' });

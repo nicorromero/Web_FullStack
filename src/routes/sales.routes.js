@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const { getSale,
+const { getSales,
     getSaleById,
     createSale,
     deleteSale
-} = require('../controllers/sales.controller');
+} = require('../controllers/sales.controllers');
 
 router.get('/', getSales);
 router.get('/:id', getSaleById);

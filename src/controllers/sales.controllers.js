@@ -1,21 +1,25 @@
-const sales = require('../data/sales.json');
+const Sales = require('../models/sale.model');
 
-const getSales = (req, res) => {
-    res.json(sales);
-};
+const getSales = async (req, res) => {
+    try {
+        const sale = await Sales.find();
+        res.json(sale);
 
-const getSaleById = (req, res) => {
-    const id = parseInt(req.params.id);
-
-    const sale = sales.find(s => s.id === id);
-
-    if (!sale) {
-        return res.status(404).json({ error: 'Venta no encontrada' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 
-    res.json(sale);
 };
-//LISTO
+
+const getSaleById = async (req, res) => {
+    try {
+        const sale = await Sales.findById(req.params.id);
+        res.json(sale);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 const createSale = async (req, res) => {
     try {
         const { date, user, items, total } = req.body;
@@ -38,17 +42,14 @@ const createSale = async (req, res) => {
     }
 };
 
-const deleteSale = (req, res) => {
-    const id = parseInt(req.params.id); // Obtener el ID de la venta a eliminar
-
-    const saleIndex = sales.findIndex(s => s.id === id); //busca la venta por id y devuelve su posición, si no lo encuentra devuelve -1
-    // Si la venta no existe, devuelve un error 404
-    if (saleIndex === -1) {
-        return res.status(404).json({ error: 'Venta no encontrada' });
+const deleteSale = async (req, res) => {
+    try {
+        const sale = await Sales.findByIdAndDelete(req.params.id);
+        res.json(sale)
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-    // Elimina la venta del array utilizando splice
-    sales.splice(saleIndex, 1);
-}
+};
 
 
 module.exports = {
